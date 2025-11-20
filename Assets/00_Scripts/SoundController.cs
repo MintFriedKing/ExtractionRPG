@@ -1,4 +1,5 @@
 using System;
+using ExtractionRPG;
 using UnityEngine;
 
 public class SoundController : MonoBehaviour
@@ -15,22 +16,20 @@ public class SoundController : MonoBehaviour
   private AudioSource audioSource;
   private void Awake()
   {
-    Init();
+     Init();
   }
     private void Start()
     {
        audioSource.clip = lobbyClip;
        audioSource.loop =true;
-        
+       audioSource.volume = SettingDataController.Instance.SettingData.bgmVolume;
+       audioSource.mute = SettingDataController.Instance.SettingData.isAllMute;
+       audioSource.Play();    
     }
-    private void Init()
+  private void Init()
   {
     DontDestroyOnLoad(this.gameObject);
     Instance = this;
-    audioSource.clip = lobbyClip;
-    audioSource.loop = true;
-    audioSource.volume = 1f;
-    audioSource.Play();
   }
 
   public void OnPlayClickSound()

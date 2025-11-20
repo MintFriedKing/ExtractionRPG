@@ -1,26 +1,33 @@
 using UnityEngine;
 using System.IO;
+
 namespace ExtractionRPG
 {
-class SettingData
+
+public class SettingData
 {
   public bool isAllMute;    
   public float bgmVolume;
   public float effectVolume;
+  public bool isFullScreen;
+  public int dropdownIndex; 
 }
 public class SettingDataController : MonoBehaviour
 {
-    [SerializeField,Header("[SettingDataFileName]")]private string settingFileName;
     public static SettingDataController Instance;
-    
-
+    public SettingData SettingData{get{return settingData;}set{settingData = value;}}
+    [SerializeField,Header("[SettingDataFileName]")]private string settingFileName;
+    private SettingData settingData;
+    private string path;
         private void Awake()
         {
             Instance = this;
+            Init();
         }
-        private void Start() 
+        private void Init()
         {
-          string path = Path.Combine(Application.persistentDataPath,settingFileName);
+          DontDestroyOnLoad(this.gameObject);
+            path = Path.Combine(Application.persistentDataPath,settingFileName);
           #if UNITY_EDITOR
             path = Path.Combine(Application.dataPath,settingFileName);
           #endif
@@ -28,15 +35,18 @@ public class SettingDataController : MonoBehaviour
           if(File.Exists(path) == true)
           {
             Debug.Log("셋팅 값 저장되서 발뺌");
-            return;          
+            string jsonData =File.ReadAllText(path);
+            SettingData = JsonUtility.FromJson<SettingData>(jsonData);                  
           }
           else
           {     
-            SettingData settingData = new SettingData()
+            settingData = new SettingData()
             {
                   isAllMute = false,
                   bgmVolume = 1f,
-                  effectVolume =1f
+                  effectVolume =1f,
+                  isFullScreen  = true,
+                  dropdownIndex = 1
             };
             string jsonData = JsonUtility.ToJson(settingData);
             File.WriteAllText(path,jsonData);
@@ -45,5 +55,12 @@ public class SettingDataController : MonoBehaviour
             }
           }
        }
+        public void SaveSettingData()
+        {
+            string saveJsonData = JsonUtility.ToJson(settingData);
+            File.WriteAllText(path,saveJsonData);
+        }
+
+
     }
 }
