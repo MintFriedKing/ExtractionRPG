@@ -2,6 +2,8 @@ using System;
 using ExtractionRPG;
 using UnityEngine;
 
+namespace ExtractionRPG
+{
 public class SoundController : MonoBehaviour
 {
   public static SoundController Instance;
@@ -37,4 +39,5 @@ public class SoundController : MonoBehaviour
      audioSource.PlayOneShot(buttonClickClip);
   }
     
+}
 }

@@ -10,7 +10,9 @@ public class SettingData
   public float bgmVolume;
   public float effectVolume;
   public bool isFullScreen;
-  public int dropdownIndex; 
+  public int resoulationDropdownIndex;
+  public int languageDropdownIndex; 
+  
 }
 public class SettingDataController : MonoBehaviour
 {
@@ -46,7 +48,8 @@ public class SettingDataController : MonoBehaviour
                   bgmVolume = 1f,
                   effectVolume =1f,
                   isFullScreen  = true,
-                  dropdownIndex = 1
+                  resoulationDropdownIndex = 1,
+                  languageDropdownIndex = 1
             };
             string jsonData = JsonUtility.ToJson(settingData);
             File.WriteAllText(path,jsonData);

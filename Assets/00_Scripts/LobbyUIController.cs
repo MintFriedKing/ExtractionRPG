@@ -15,13 +15,16 @@ public class LobbyUIController : MonoBehaviour
  [SerializeField,Header("[ExitObject]")]private GameObject exitPopUp;
  [SerializeField,Header("[SoundContent]")]private GameObject soundContent;
  [SerializeField,Header("[videoContent]")]private GameObject videoContent;
- [SerializeField,Header("[Navigation SoundButton]")] private Button navigationSoundButton;
- [SerializeField,Header("[Navigation videoButton]")] private Button navigationVideoButton;
+ [SerializeField,Header("[LanguageContent]")]private GameObject languageContent;
+ [SerializeField,Header("[Navigation SoundButton]")]private Button navigationSoundButton;
+ [SerializeField,Header("[Navigation videoButton]")]private Button navigationVideoButton;
+ [SerializeField,Header("[Navigation languageButton]")]private Button navigationLanguageButton; 
  [SerializeField,Header("[SettingExitButton]")]private Button settingExitButton;
  [SerializeField,Header("[MuteToggles - Yes]")] private Toggle muteYesToggle;
  [SerializeField,Header("[BGMVolumeSlider]")]private Slider bgmVolumeSlider;
-  [SerializeField,Header("[Video - FullScreenToggle]")] private Toggle fullScreenToggle; 
-
+ [SerializeField,Header("[Video - FullScreenToggle]")]private Toggle fullScreenToggle; 
+ [SerializeField,Header("[Video - ResoulationDropdown]")]private Dropdown resoulationDropdown;
+ [SerializeField,Header("[Language -languageDropdowb]")]private Dropdown languageDropdown;
 
  #endregion
 #region HUD UI
@@ -53,36 +56,17 @@ public class LobbyUIController : MonoBehaviour
         settingExitButton.onClick.AddListener(OnClickSettingExitButton);
         navigationSoundButton.onClick.AddListener(OnClickNavigationSoundButton);
         navigationVideoButton.onClick.AddListener(OnClickNavigationVideoButton);
+        navigationLanguageButton.onClick.AddListener(OnClickNavigationLanguageButton);
         muteYesToggle.onValueChanged.AddListener(delegate{OnClickMuteToggle();});
         bgmVolumeSlider.onValueChanged.AddListener(delegate{OnChangedBGMSlider();});
+        fullScreenToggle.onValueChanged.AddListener(delegate{OnClickFullScreenToggle();});
+        resoulationDropdown.onValueChanged.AddListener(delegate{OnSelectResoulationDropdown();});
         hudCanvas.gameObject.SetActive(true);
         settingAndExitCanvas.gameObject.SetActive(false);
    }
   
    #region SettingPanel - Sound
-   private void OnClickSettingButton()
-   {
-       SoundController.Instance.OnPlayClickSound();
-       settingAndExitCanvas.gameObject.SetActive(true);
-       settingPopUp.gameObject.SetActive(true);
-       if(SettingDataController.Instance.SettingData.isAllMute == true)
-        {
-            muteYesToggle.isOn =true;        
-        }
-        else
-        {
-            muteYesToggle.isOn =false;
-        }
-       bgmVolumeSlider.value = SettingDataController.Instance.SettingData.bgmVolume;
-       if(SettingDataController.Instance.SettingData.isFullScreen == true)
-       {
-          fullScreenToggle.isOn = true;         
-       }
-       else
-       {
-          fullScreenToggle.isOn =false;
-       }
-   }
+
    private void OnClickSettingExitButton()
    {
         SoundController.Instance.OnPlayClickSound();
@@ -113,28 +97,86 @@ public class LobbyUIController : MonoBehaviour
    }
   #endregion
    #region SettingPanel - Video
+
    private void OnClickFullScreenToggle()
     {
         if(fullScreenToggle.isOn == true)
         {
-                  
+            ResoulationController.Instance.SetScreenMode(true);
+        }
+        else
+        {
+            ResoulationController.Instance.SetScreenMode(false);  
         }    
-    }  
+    } 
+    private void OnSelectResoulationDropdown()
+    {
+         ResoulationController.Instance.SetScreenResoulation(resoulationDropdown.value);
+    } 
    #endregion   
 
+#region SettingPanel - language
+   private void OnSelectLanguageDropdown()
+   {
+      if(languageDropdown.value == 0)
+      {
+                LocalizationTextController.Instance.OnChangeLanguage(0);
+      }
+      else if(languageDropdown.value == 1)
+      {
+                LocalizationTextController.Instance.OnChangeLanguage(1);
+      }
+   }
+#endregion
 
-    private void OnClickNavigationSoundButton()
+   private void OnClickSettingButton()
+   {
+       SoundController.Instance.OnPlayClickSound();
+       settingAndExitCanvas.gameObject.SetActive(true);
+       settingPopUp.gameObject.SetActive(true);
+       videoContent.gameObject.SetActive(false);
+       languageContent.gameObject.SetActive(false);
+       soundContent.gameObject.SetActive(true);    
+       if(SettingDataController.Instance.SettingData.isAllMute == true)
+        {
+            muteYesToggle.isOn =true;        
+        }
+        else
+        {
+            muteYesToggle.isOn =false;
+        }
+       bgmVolumeSlider.value = SettingDataController.Instance.SettingData.bgmVolume;
+       if(SettingDataController.Instance.SettingData.isFullScreen == true)
+       {
+          fullScreenToggle.isOn = true;         
+       }
+       else
+       {
+          fullScreenToggle.isOn =false;
+       }
+      resoulationDropdown.value= SettingDataController.Instance.SettingData.resoulationDropdownIndex; 
+      languageDropdown.value = SettingDataController.Instance.SettingData.languageDropdownIndex;
+   }
+   private void OnClickNavigationSoundButton()
    {
       SoundController.Instance.OnPlayClickSound();
       videoContent.gameObject.SetActive(false);
+      languageContent.gameObject.SetActive(false);
       soundContent.gameObject.SetActive(true);      
    }
    private void OnClickNavigationVideoButton()
    {
      SoundController.Instance.OnPlayClickSound();
      soundContent.gameObject.SetActive(false);
-     videoContent.gameObject.SetActive(true);
-            
+     languageContent.gameObject.SetActive(false);
+     videoContent.gameObject.SetActive(true);            
+   }
+   private void OnClickNavigationLanguageButton()
+   {
+      SoundController.Instance.OnPlayClickSound();
+      soundContent.gameObject.SetActive(false);
+      videoContent.gameObject.SetActive(false);
+      languageContent.gameObject.SetActive(true);
    }
 }
 }
